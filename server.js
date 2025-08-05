@@ -1,44 +1,40 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
-const axios = require('axios');
-
+const bodyParser = require('body-parser');
 const app = express();
-const PORT = 5000;
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-let latestData = {};
+
+let latestData = null;
 
 app.post('/api/sensors', (req, res) => {
   const { ldr, temp, smoke } = req.body;
   latestData = {
-    ldr: parseInt(ldr),
-    temp: parseInt(temp),
-    smoke: parseInt(smoke),
-    fireDetected: parseInt(smoke) > 500 || parseInt(ldr) < 200 || parseInt(temp) > 50,
+    ldr,
+    temp,
+    smoke,
+    fireDetected: temp > 50 || smoke > 600,
     timestamp: new Date().toLocaleString()
   };
-  console.log("Received sensor data:", latestData);
-  if (latestData.fireDetected) {
-    sendTelegramAlert(`■ FIRE DETECTED!\nLDR: ${ldr}, Temp: ${temp}°C, Smoke: ${smoke}`);
-  }
-  res.sendStatus(200);
+  console.log("Sensor data received:", latestData);
+  res.status(200).json({ message: "Data received" });
 });
 
 app.get('/api/sensors', (req, res) => {
-  res.json(latestData);
+  if (!latestData) {
+    return res.status(404).json({ message: 'No sensor data yet' });
+  }
+  res.status(200).json(latestData);
 });
 
-function sendTelegramAlert(message) {
-  const botToken = 'your_telegram_bot_token';
-  const chatId = 'your_chat_id';
-  axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-    chat_id: chatId,
-    text: message
-  });
-}
+app.get('/', (req, res) => {
+  res.send("🔥 Tejas backend is running!");
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
