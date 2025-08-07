@@ -32,12 +32,16 @@ app.post('/api/sensors', async (req, res) => {
   res.status(200).json({ message: "Sensor data received" });
 
   // ✅ Forward to EC2 endpoint after responding
-  try {
-    await axios.post("http://13.60.209.249:5000/api/sensors", latestData);
-    console.log("✅ Forwarded to EC2 successfully");
-  } catch (err) {
-    console.error("❌ Failed to forward to EC2:", err.message);
+try {
+  if (fireDetected) {
+    await axios.post("http://13.60.209.249:5000/fire-alert", {
+      status: "fire"
+    });
+    console.log("✅ Fire alert forwarded to EC2");
   }
+} catch (err) {
+  console.error("❌ Failed to forward to EC2:", err.message);
+}
 });
 
 app.get('/api/sensors', (req, res) => {
