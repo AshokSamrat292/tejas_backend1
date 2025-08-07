@@ -33,7 +33,7 @@ app.post('/api/sensors', async (req, res) => {
 
   // ✅ Forward to EC2 endpoint after responding
   try {
-    await axios.post("http://13.60.209.249/api/sensors", latestData);
+    await axios.post("http://13.60.209.249:5000/api/sensors", latestData);
     console.log("✅ Forwarded to EC2 successfully");
   } catch (err) {
     console.error("❌ Failed to forward to EC2:", err.message);
