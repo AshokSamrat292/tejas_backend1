@@ -18,15 +18,16 @@ app.post('/api/sensors', (req, res) => {
     return res.status(400).json({ error: "Missing one or more sensor fields" });
   }
 
-  const fireDetected = Number(temp) > 50 && Number(smoke) == 1 && Number(ldr)>170 ;
+const fireDetected = Number(temp) > 50 && Number(smoke) == 1 && Number(ldr) > 170;
 
-  latestData = {
-    ldr,
-    temp,
-    smoke,
-    fireDetected,
-    timestamp: new Date().toLocaleString()
-  };
+latestData = {
+  ldr,
+  temp,
+  smoke,
+  fireDetected,
+  timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })  // ✅ Now in IST
+};
+
 
   console.log("🔥 Sensor Data:", latestData);
 
