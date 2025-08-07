@@ -33,7 +33,7 @@ app.post('/api/sensors', async (req, res) => {
 
   // ✅ Forward to EC2 endpoint after responding
 try {
-  if (!fireDetected) {
+  if (fireDetected) {
     await axios.post("http://13.60.209.249:5000/fire-alert", {
       status: "fire"
     });
