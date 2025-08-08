@@ -17,7 +17,7 @@ app.post('/api/sensors', async (req, res) => {
     return res.status(400).json({ error: "Missing one or more sensor fields" });
   }
 
-  const fireDetected = Number(temp) > 32 && Number(smoke) == 1 && Number(ldr) > 20;
+  const fireDetected = Number(temp) > 25 && Number(smoke) == 0 && Number(ldr) > 20;
 
   latestData = {
     ldr,
